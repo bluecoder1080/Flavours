@@ -1,0 +1,48 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+}
+.logo{
+    width: 100px;
+}
+
+.nav-items ul{
+    display: flex;
+    list-style-type: none;
+    font-size: 24px;
+    padding-right: 20px;
+   
+
+}
+
+.nav-items ul li{
+     padding: 10px;
+    margin: 10px;
+}
+
+.res-card{
+   
+    width: 200px;
+   
+    padding: 5px;
+    background-color: #f5f5f5;
+    margin: 5px;
+    
+}
+.search{
+    padding: 10px;
+}
+.sf1{
+    width: 100%;
+    /* padding: 2px; */
+}
+.res-card:hover{
+    border: 2px solid black;
+
+}
+.res-container{
+    display: flex;
+    flex-wrap: wrap;
+    
+}
