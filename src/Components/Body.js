@@ -66,8 +66,8 @@ const Body = () => {
       {/* http://localhost:1234/RestaurantInfo/82141http://localhost:1234/RestaurantInfo/82141 */}
       <div className="res-container">
         {filterd.map((restaurant) => (
-          <Link to={"/RestaurantInfo/"+restaurant.info.id } style={{ textDecoration: 'none', color: 'inherit' }}>
-          <RestaurantCard key={restaurant.info.id} resdata={restaurant} /></Link>
+          <Link to={"/RestaurantInfo/"+restaurant.info.id } key={restaurant.info.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <RestaurantCard  resdata={restaurant} /></Link>
         ))}
       </div>
     </div>

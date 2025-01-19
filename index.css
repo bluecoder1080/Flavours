@@ -88,57 +88,17 @@
   padding-top: 20px;
 }
 
-/* AboutUs.css */
-
-#about-us-section {
-  padding: 20px;
-  background-color: #f9f9f9;
-  font-family: Arial, sans-serif;
-  color: #333;
-  background-color: #f4c8ab;
+.User-info{
+  border: 2px solid saddlebrown;
+  background-color: orange;
+  color: black;
+  padding-left: 40px;
 }
-
-.main-heading {
-  font-size: 2.5em;
-  color: #d35400;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.about-us-intro {
-  font-size: 1.2em;
-  font-weight: bold;
-  text-align: center;
-}
-
-.about-us-text {
-  font-size: 1em;
-  line-height: 1.6;
-  margin: 10px 0;
-  text-align: justify;
-}
-
-.sub-heading {
-  font-size: 1.8em;
-  color: #2c3e50;
-  margin-top: 20px;
-}
-
-.reasons-list {
-  list-style-type: disc;
-  margin: 20px 40px;
-  padding-left: 20px;
-}
-
-.reasons-list li {
-  margin-bottom: 10px;
-}
-
-.highlight-text {
-  font-size: 1.2em;
-  color: #27ae60;
-  text-align: center;
-  font-weight: bold;
+.User-info2{
+  border: 2px solid saddlebrown;
+  background-color: orange;
+  color: black;
+  padding-left: 40px;
 }
 
 /* ContactUs.css */
