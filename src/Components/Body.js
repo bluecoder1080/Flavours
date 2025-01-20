@@ -2,8 +2,7 @@ import RestaurantCard from "../RestaurantCard";
 import { useState, useEffect } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router";
-import useOnlineStatus from "../../utils/useOnlineStatus" 
-
+import useOnlineStatus from "../../utils/useOnlineStatus";
 
 const Body = () => {
   const [filterd, setfiltered] = useState([]);
@@ -26,11 +25,11 @@ const Body = () => {
     setfiltered(restaurants);
     setAllRestaurants(restaurants); // Save the original list
   };
-const onlineStatus = useOnlineStatus();
+  const onlineStatus = useOnlineStatus();
 
-if(onlineStatus === false){
-  return <h1>Looks Like You Are Offline</h1>
-}
+  if (onlineStatus === false) {
+    return <h1>Looks Like You Are Offline</h1>;
+  }
 
   if (filterd.length === 0) {
     return <Shimmer />;
@@ -38,15 +37,59 @@ if(onlineStatus === false){
 
   return (
     <div className="body">
-      <div className="filter">
-        <div className="search">
-          <input
+      <div className="flex ">
+        <div className="  m-4 p-4">
+{/* ********************************************************Search Button *********************************** */}
+        <form method="GET" action="">
+  <div class="bg-white border-2 shadow p-2 relative rounded-xl flex">
+    <span class="w-auto flex justify-end items-center text-gray-500 p-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        ></path>
+      </svg>
+    </span>
+    <input
+      name="episodequery"
+      id="title"
+      class="border-white outline-none border-0 w-full rounded-xl p-2"
+      type="text"
+      placeholder="What are you looking for?"
+      value={searchtext}
+      onChange={(e) => setsearchtext(e.target.value)}
+    />
+    <button
+      type="button"
+      class="bg-black hover:bg-gray-700 rounded-xl text-white text-xl p-2 pl-4 pr-4 ml-2"
+      onClick={() => {
+        const searchedRestaurants = allRestaurants.filter((res) =>
+          res.info.name.toLowerCase().includes(searchtext.toLowerCase())
+        );
+        setfiltered(searchedRestaurants);
+      }}
+    >
+      <p class="font-semibold text-xs">Search</p>
+    </button>
+  </div>
+</form>
+{/* **********************************************************Till Here*************************************** */}
+          {/* <input
             type="text"
-            className="search-box"
+            className="  border border-solid border-black"
             value={searchtext}
             onChange={(e) => setsearchtext(e.target.value)}
           />
-          <button
+          <button 
+            className="px-4 py-2 bg-green-200 m-4 rounded-xl"
             onClick={() => {
               const searchedRestaurants = allRestaurants.filter((res) =>
                 res.info.name.toLowerCase().includes(searchtext.toLowerCase())
@@ -55,10 +98,11 @@ if(onlineStatus === false){
             }}
           >
             Search
-          </button>
+          </button> */}
         </div>
+        <div className=" m-4 p-4 flex items-center rounded-xl">
         <button
-          className="filter-btn"
+          className="p-2 bg-gray-500 rounded-xl font-bold text-gray-100 hover:text-orange-400"
           onClick={() => {
             const filterdList = allRestaurants.filter(
               (resdata) => resdata.info.avgRatingString > 4.2
@@ -68,12 +112,21 @@ if(onlineStatus === false){
         >
           Top Rated Restaurants
         </button>
+        </div>
+       
+
+       
       </div>
       {/* http://localhost:1234/RestaurantInfo/82141http://localhost:1234/RestaurantInfo/82141 */}
-      <div className="res-container">
+      <div className="flex flex-wrap">
         {filterd.map((restaurant) => (
-          <Link to={"/RestaurantInfo/"+restaurant.info.id } key={restaurant.info.id} style={{ textDecoration: 'none', color: 'inherit' }}>
-          <RestaurantCard  resdata={restaurant} /></Link>
+          <Link
+            to={"/RestaurantInfo/" + restaurant.info.id}
+            key={restaurant.info.id}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <RestaurantCard resdata={restaurant} />
+          </Link>
         ))}
       </div>
     </div>
