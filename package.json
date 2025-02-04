@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/bluecoder1080/Flavours#readme",
   "devDependencies": {
+    "@parcel/transformer-babel": "^2.13.3",
+    "@parcel/transformer-js": "^2.13.3",
     "parcel": "^2.13.3",
     "postcss": "^8.5.1",
     "process": "^0.11.10",
