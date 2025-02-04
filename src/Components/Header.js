@@ -8,7 +8,7 @@ const Header = () => {
   const navigate = useNavigate();
   return (
     <div className="flex justify-between bg-slate-300 shadow-lg">
-      <img className="w-36 mx-20 cursor-pointer" src={logo} alt="Logo" onClick={() => navigate("/")} cursor/>
+      <img className="w-36 mx-20 cursor-pointer" src={logo} alt="Logo" onClick={() => navigate("/")} />
       <div className="nav-items">
         <ul className="flex justify-between m-6 p-4 space-x-12 text-lg font-semibold py-10 ">
           <li className="hover:text-orange-600 ">

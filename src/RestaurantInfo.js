@@ -34,35 +34,39 @@ const RestaurantInfo = () => {
   } = resInfo?.cards?.[2]?.card?.card?.info;
 
   const { itemCards } =
-    resInfo.cards[4].groupedCard.cardGroupMap.REGULAR.cards[4].card.card;
+    resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards[12]?.card
+      ?.card;
 
-  // data.cards[4].groupedCard.cardGroupMap.REGULAR.cards[4].card.card.itemCards[0].card.info.name
+  // console.log(resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards);
+
+  const categories =
+    resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
+      (c) =>
+        c.card.card?.["@type"] ===
+        "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+    );
+
+ console.log(categories);
 
   const { minDeliveryTime, maxDeliveryTime } =
     resInfo?.cards?.[2]?.card?.card?.info?.sla;
-  console.log(itemCards);
+  // console.log(itemCards);
   return (
     <div>
       <div className="resInfocard">
-        <h1>{name}</h1>
-        <h2>{city}</h2>
-        <h3>
+        <h1 className=" font-bold text-center text-lg my-6 text-2xl">{name}</h1>
+        
+        <h3 className="font-bold text-lg">
           ⭐{avgRatingString} ~ {costForTwoMessage}
         </h3>
-        <h3>{cuisines?.join(" , ")}</h3>
-        <h3>{locality}</h3>
-        <h3>
+        <h3 className="font-medium text-red-600 underline">{cuisines?.join(" , ")}</h3>
+        <span className="font-semibold">Outlet </span>
+        <span className="font-light">{locality}</span>
+        <h3 className="font-semibold">
           {minDeliveryTime}-{maxDeliveryTime} mins
         </h3>
-        <h3>{areaName}</h3>
+  
 
-        <ul>
-          {itemCards?.map((item) => (
-            <li key={item.card.info.id}>
-              {item.card.info.name} ~ ₹ {item.card.info.price / 100}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
