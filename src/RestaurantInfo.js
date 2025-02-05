@@ -63,7 +63,7 @@ const RestaurantInfo = () => {
       {/* Categories  */}
 
       {categories?.map((Category) => (
-        <RestaurantCategories data={Category?.card?.card} />
+        <RestaurantCategories key = {Category?.card?.card.title} data={Category?.card?.card} />
       ))}
 
       {/* {categories.map((Category) => {
