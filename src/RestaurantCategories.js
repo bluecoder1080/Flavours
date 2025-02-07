@@ -9,18 +9,20 @@ const RestaurantCategories = ({ data }) => {
     setshowData(!showData);
   } 
   return (
-    <div className=" w-6/12 mx-auto my-4   font-bold ">
+    <div className=" w-6/12 mx-auto    font-bold   border-b-2 shadow-lg my-10">
         <div className="flex justify-between my-7 text-lg cursor-pointer " onClick={handleClick}>
       <span>
    
-        {data.title}({data?.itemCards?.length}){" "}
+        {data.title}
       </span>
       <span>⤵️</span>
       </div>
       {/* Accordian Body */}
       { showData && <ItemList  items = {data?.itemCards}/>}
     </div>
+    
   );
+  
 };
 
 export default RestaurantCategories;

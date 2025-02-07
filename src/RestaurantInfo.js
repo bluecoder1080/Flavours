@@ -6,6 +6,7 @@ import RestaurantCategories from "./RestaurantCategories";
 const RestaurantInfo = () => {
   // const [resInfo, setResInfo] = useState(null);
   const { resid } = useParams();
+  
 
   const resInfo = RestaurantMenuHook(resid);
 
@@ -23,9 +24,10 @@ const RestaurantInfo = () => {
     city,
   } = resInfo?.cards?.[2]?.card?.card?.info;
 
-  const { itemCards } =
-    resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards[12]?.card
-      ?.card;
+  const itemCards =
+  resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards
+    ?.find(c => c.card.card?.itemCards)?.card?.card?.itemCards || [];
+
 
   // console.log(resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards);
 
@@ -36,7 +38,7 @@ const RestaurantInfo = () => {
         "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
     );
 
-  console.log(categories);
+ 
 
   const { minDeliveryTime, maxDeliveryTime } =
     resInfo?.cards?.[2]?.card?.card?.info?.sla;
