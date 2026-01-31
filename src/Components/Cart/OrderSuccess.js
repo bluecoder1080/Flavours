@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 
-const OrderSuccess = ({ onClose }) => {
-  const orderId = `FLV${Math.random().toString().slice(2, 8)}`;
+const OrderSuccess = ({ orderId, onClose }) => {
+  const navigate = useNavigate();
+  const displayId = orderId || `FLV${Math.random().toString().slice(2, 8)}`;
 
   return (
     <div className="flex flex-col items-center justify-center h-full p-8 text-center">
@@ -17,7 +19,7 @@ const OrderSuccess = ({ onClose }) => {
       <div className="bg-gray-800/50 rounded-xl p-4 w-full mb-6">
         <div className="flex items-center justify-between mb-2">
           <span className="text-gray-400 text-sm">Order ID</span>
-          <span className="text-white font-medium">#{orderId}</span>
+          <span className="text-white font-medium">#{displayId.slice(-8)}</span>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-gray-400 text-sm">Estimated Delivery</span>
@@ -25,12 +27,20 @@ const OrderSuccess = ({ onClose }) => {
         </div>
       </div>
 
-      <button
-        onClick={onClose}
-        className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all"
-      >
-        Continue Ordering
-      </button>
+      <div className="w-full space-y-3">
+        <button
+          onClick={() => { onClose(); navigate('/orders'); }}
+          className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all"
+        >
+          Track Order
+        </button>
+        <button
+          onClick={onClose}
+          className="w-full py-3 rounded-xl font-medium text-gray-400 border border-gray-700 hover:bg-gray-800 transition-all"
+        >
+          Continue Ordering
+        </button>
+      </div>
     </div>
   );
 };

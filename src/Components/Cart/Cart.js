@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
+import { useOrders } from '../../context/OrderContext';
 import CartHeader from './CartHeader';
 import StepProgress from './StepProgress';
 import CartItems from './CartItems';
@@ -10,12 +11,18 @@ import BillSummary from './BillSummary';
 
 const Cart = ({ isOpen, onClose }) => {
   const { cartItems, updateQuantity, removeFromCart, total, clearCart } = useCart();
+  const { addOrder } = useOrders();
   const [step, setStep] = useState('cart');
   const [address, setAddress] = useState({ name: '', phone: '', flat: '', area: '', landmark: '', city: '' });
   const [paymentMethod, setPaymentMethod] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [orderId, setOrderId] = useState('');
 
   if (!isOpen) return null;
+
+  const deliveryFee = total > 500 ? 0 : 40;
+  const taxes = Math.round(total * 0.05);
+  const grandTotal = total + deliveryFee + taxes;
 
   const handleBack = () => {
     if (step === 'payment') setStep('address');
@@ -25,6 +32,7 @@ const Cart = ({ isOpen, onClose }) => {
   const handleClose = () => {
     setStep('cart');
     setPaymentMethod('');
+    setOrderId('');
     onClose();
   };
 
@@ -34,9 +42,20 @@ const Cart = ({ isOpen, onClose }) => {
     else if (action === 'pay') {
       setIsProcessing(true);
       await new Promise(r => setTimeout(r, 2000));
+      
+      // Save order
+      const order = addOrder({
+        items: cartItems,
+        total: grandTotal,
+        address,
+        paymentMethod,
+        restaurantName: 'Flavours Restaurant'
+      });
+      
+      setOrderId(order.id);
       setIsProcessing(false);
       setStep('success');
-      setTimeout(clearCart, 1000);
+      setTimeout(clearCart, 500);
     }
   };
 
@@ -49,28 +68,17 @@ const Cart = ({ isOpen, onClose }) => {
           
           {step !== 'success' && cartItems.length > 0 && <StepProgress currentStep={step} />}
 
-          {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
             {step === 'cart' && (
               <div className="p-4">
                 <CartItems items={cartItems} updateQuantity={updateQuantity} removeFromCart={removeFromCart} />
               </div>
             )}
-            
-            {step === 'address' && (
-              <AddressForm address={address} setAddress={setAddress} />
-            )}
-            
-            {step === 'payment' && (
-              <PaymentOptions address={address} selectedMethod={paymentMethod} onSelect={setPaymentMethod} />
-            )}
-            
-            {step === 'success' && (
-              <OrderSuccess onClose={handleClose} />
-            )}
+            {step === 'address' && <AddressForm address={address} setAddress={setAddress} />}
+            {step === 'payment' && <PaymentOptions address={address} selectedMethod={paymentMethod} onSelect={setPaymentMethod} />}
+            {step === 'success' && <OrderSuccess orderId={orderId} onClose={handleClose} />}
           </div>
 
-          {/* Fixed Footer */}
           {cartItems.length > 0 && step !== 'success' && (
             <div className="flex-shrink-0">
               <BillSummary total={total} step={step} address={address} paymentMethod={paymentMethod} isProcessing={isProcessing} onAction={handleAction} />
