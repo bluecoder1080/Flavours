@@ -8,18 +8,21 @@ import {
   RouterProvider,
 } from "react-router";
 import AboutUs from "./Components/About";
-// import ContactUs from "./Components/Contact";
 import Error from "./Components/Error";
 import RestaurantInfo from "./RestaurantInfo";
-// import Groceries from "./Components/Groceries";
+import { CartProvider } from "./context/CartContext";
+
 const Groceries = lazy(() => import("./Components/Groceries"));
 const ContactUs = lazy(() => import("./Components/Contact"));
+
 const AppLayout = () => {
   return (
-    <div className="app">
-      <Header />
-      <Outlet />
-    </div>
+    <CartProvider>
+      <div className="app min-h-screen">
+        <Header />
+        <Outlet />
+      </div>
+    </CartProvider>
   );
 };
 
@@ -38,16 +41,23 @@ const appRouter = Router([
       },
       {
         path: "/Groceries",
-        element:( <Suspense fallback={<h1>LOADING ....</h1>}><Groceries /></Suspense>),
+        element: (
+          <Suspense fallback={<h1 className="text-white text-center py-12">LOADING....</h1>}>
+            <Groceries />
+          </Suspense>
+        ),
       },
       {
         path: "/About",
         element: <AboutUs />,
       },
-
       {
         path: "/Contact",
-        element: (<Suspense fallback = {<h1>LOADING......</h1>}><ContactUs /></Suspense>),
+        element: (
+          <Suspense fallback={<h1 className="text-white text-center py-12">LOADING......</h1>}>
+            <ContactUs />
+          </Suspense>
+        ),
       },
     ],
     errorElement: <Error />,

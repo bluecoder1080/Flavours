@@ -1,76 +1,105 @@
-import Shimmer from "./Components/Shimmer";
-import { useParams } from "react-router";
-import RestaurantMenuHook from "../utils/RestaurantMenuHook";
-import RestaurantCategories from "./RestaurantCategories";
+import React, { useState } from 'react';
+import { useParams } from 'react-router';
+import { menuData } from './data/menuData';
+import { restaurants } from './data/restaurants';
+import { useCart } from './context/CartContext';
 
 const RestaurantInfo = () => {
-  // const [resInfo, setResInfo] = useState(null);
   const { resid } = useParams();
-  
+  const { addToCart } = useCart();
+  const [expandedCategory, setExpandedCategory] = useState(0);
 
-  const resInfo = RestaurantMenuHook(resid);
+  const restaurant = restaurants.find(r => r.id === resid);
+  const menu = menuData[resid];
 
-  if (resInfo === null) {
-    return <Shimmer />;
+  if (!restaurant || !menu) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <h1 className="text-2xl text-white">Restaurant not found</h1>
+      </div>
+    );
   }
 
-  const {
-    name,
-    cuisines,
-    costForTwoMessage,
-    locality,
-    avgRatingString,
-    areaName,
-    city,
-  } = resInfo?.cards?.[2]?.card?.card?.info;
+  const handleAddToCart = (item) => {
+    addToCart(item);
+  };
 
-  const itemCards =
-  resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards
-    ?.find(c => c.card.card?.itemCards)?.card?.card?.itemCards || [];
-
-
-  // console.log(resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards);
-
-  const categories =
-    resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
-      (c) =>
-        c.card.card?.["@type"] ===
-        "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
-    );
-
- 
-
-  const { minDeliveryTime, maxDeliveryTime } =
-    resInfo?.cards?.[2]?.card?.card?.info?.sla;
-  // console.log(itemCards);
   return (
-    <div>
-      <div className="w-6/12 mx-auto  my-4 bg-gray-50 relative p-4 border-4 border-transparent rounded-lg bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 bg-clip-border shadow-md">
-        <h1 className=" font-bold  text-2xl mt-6 m-5 ">{name}</h1>
-        <div className="my-5 m-5 ">
-          <h3 className="font-bold text-lg ">
-            ⭐{avgRatingString} ~ {costForTwoMessage}
-          </h3>
-          <h3 className="font-medium text-red-600 underline">
-            {cuisines?.join(" , ")}
-          </h3>
-          <span className="font-semibold">Outlet </span>
-          <span className="font-light">{locality}</span>
-          <h3 className="font-semibold">
-            {minDeliveryTime}-{maxDeliveryTime} mins
-          </h3>
+    <div className="min-h-screen px-6 py-8 max-w-5xl mx-auto animate-fade-in">
+      {/* Restaurant Header */}
+      <div className="glass rounded-xl p-8 mb-8 animate-slide-up">
+        <div className="flex items-start gap-6">
+          <img
+            src={restaurant.image}
+            alt={restaurant.name}
+            className="w-32 h-32 rounded-lg object-cover"
+          />
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-gradient mb-2">
+              {restaurant.name}
+            </h1>
+            <p className="text-gray-400 mb-3">{restaurant.cuisine}</p>
+            <div className="flex gap-4 text-sm">
+              <span className="flex items-center gap-1">
+                <span className="text-[var(--color-primary)]">⭐</span>
+                <span className="text-white font-semibold">{restaurant.avgRating}</span>
+              </span>
+              <span className="text-gray-400">{restaurant.deliveryTime}</span>
+              <span className="text-[var(--color-accent)]">{restaurant.costForTwo}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Categories  */}
+      {/* Menu Categories */}
+      <div className="space-y-4">
+        {menu.categories.map((category, catIndex) => (
+          <div key={catIndex} className="glass rounded-xl overflow-hidden">
+            <button
+              onClick={() => setExpandedCategory(expandedCategory === catIndex ? -1 : catIndex)}
+              className="w-full p-5 flex justify-between items-center text-left
+                         hover:bg-white/5 transition"
+            >
+              <h2 className="text-xl font-bold text-white">
+                {category.title} ({category.items.length})
+              </h2>
+              <span className="text-[var(--color-primary)]">
+                {expandedCategory === catIndex ? '▲' : '▼'}
+              </span>
+            </button>
 
-      {categories?.map((Category) => (
-        <RestaurantCategories key = {Category?.card?.card.title} data={Category?.card?.card} />
-      ))}
-
-      {/* {categories.map((Category) => {
-        <RestaurantCategories  />;
-      })} */}
+            {expandedCategory === catIndex && (
+              <div className="p-5 pt-0 space-y-4">
+                {category.items.map((item) => (
+                  <div key={item.id} className="flex justify-between items-start gap-4 
+                                                 p-4 rounded-lg bg-black/20">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-white mb-1">{item.name}</h3>
+                      <p className="text-sm text-gray-400 mb-2">{item.description}</p>
+                      <p className="text-[var(--color-accent)] font-bold">₹{item.price}</p>
+                    </div>
+                    {item.image && (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-24 h-24 rounded-lg object-cover"
+                      />
+                    )}
+                    <button
+                      onClick={() => handleAddToCart(item)}
+                      className="px-6 py-2 rounded-lg font-semibold
+                                 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]
+                                 hover:scale-105 transition-transform"
+                    >
+                      Add +
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
