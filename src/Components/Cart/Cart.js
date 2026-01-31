@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useCart } from '../../context/CartContext';
-import { useOrders } from '../../context/OrderContext';
+import { useAuth, useCart, useOrders } from '../../context';
+import { useNavigate } from 'react-router';
 import CartHeader from './CartHeader';
 import StepProgress from './StepProgress';
 import CartItems from './CartItems';
@@ -12,6 +12,8 @@ import BillSummary from './BillSummary';
 const Cart = ({ isOpen, onClose }) => {
   const { cartItems, updateQuantity, removeFromCart, total, clearCart } = useCart();
   const { addOrder } = useOrders();
+  const { currentUser } = useAuth(); // Get currentUser
+  const navigate = useNavigate();
   const [step, setStep] = useState('cart');
   const [address, setAddress] = useState({});
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -37,7 +39,10 @@ const Cart = ({ isOpen, onClose }) => {
   };
 
   const handleAction = async (action) => {
-    if (action === 'address') setStep('address');
+    if (action === 'login') {
+      onClose();
+      navigate('/signin');
+    } else if (action === 'address') setStep('address');
     // 'payment' action is handled by AddressForm
     else if (action === 'pay') {
       setIsProcessing(true);
@@ -100,6 +105,7 @@ const Cart = ({ isOpen, onClose }) => {
                 paymentMethod={paymentMethod} 
                 isProcessing={isProcessing} 
                 onAction={handleAction} 
+                currentUser={currentUser}
               />
             </div>
           )}

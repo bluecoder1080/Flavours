@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFavorites } from './context/FavoritesContext';
+import { useFavorites } from './context';
 
 const RestaurantCard = ({ resdata }) => {
   const { name, cuisine, avgRating, deliveryTime, costForTwo, image, id } = resdata; // Ensure 'id' is available

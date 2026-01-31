@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BillSummary = ({ total, step, address, paymentMethod, isProcessing, onAction }) => {
+const BillSummary = ({ total, step, address, paymentMethod, isProcessing, onAction, currentUser }) => {
   const deliveryFee = total > 500 ? 0 : 40;
   const taxes = Math.round(total * 0.05);
   const grandTotal = total + deliveryFee + taxes;
@@ -8,7 +8,11 @@ const BillSummary = ({ total, step, address, paymentMethod, isProcessing, onActi
   const isAddressValid = address.name && address.phone && address.flat && address.area && address.city;
 
   const buttonConfig = {
-    cart: { text: 'Add Delivery Address', onClick: () => onAction('address'), disabled: false },
+    cart: { 
+      text: currentUser ? 'Add Delivery Address' : 'Login to Checkout', 
+      onClick: () => onAction(currentUser ? 'address' : 'login'), 
+      disabled: false 
+    },
     address: { text: 'Proceed to Payment', onClick: () => onAction('payment'), disabled: !isAddressValid },
     payment: { text: `Pay ₹${grandTotal}`, onClick: () => onAction('pay'), disabled: !paymentMethod, isGreen: true },
   };

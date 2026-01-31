@@ -44,8 +44,11 @@ router.post('/create', protect, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Create order error:', error);
-    res.status(500).json({ success: false, error: 'Failed to create order' });
+    console.error('Create order error:', JSON.stringify(error, null, 2));
+    if (error.name === 'ValidationError') {
+      console.error('Validation Errors:', JSON.stringify(error.errors, null, 2));
+    }
+    res.status(500).json({ success: false, error: 'Failed to create order', details: error.message });
   }
 });
 

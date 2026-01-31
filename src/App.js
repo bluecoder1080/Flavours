@@ -10,11 +10,7 @@ import {
 import AboutUs from "./Components/About";
 import Error from "./Components/Error";
 import RestaurantInfo from "./RestaurantInfo";
-import { CartProvider } from "./context/CartContext";
-import { AuthProvider } from "./context/AuthContext";
-import { OrderProvider } from "./context/OrderContext";
-import { FavoritesProvider } from "./context/FavoritesContext";
-import { AddressProvider } from "./context/AddressContext";
+import { CartProvider, AuthProvider, OrderProvider, FavoritesProvider, AddressProvider } from "./context";
 import SignIn from "./Components/Auth/SignIn";
 import SignUp from "./Components/Auth/SignUp";
 import Profile from "./Components/Profile/Profile";

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useOrders } from '../../context/OrderContext';
+import { useOrders } from '../../context';
 import { useCart } from '../../context/CartContext';
 import { useNavigate } from 'react-router';
 

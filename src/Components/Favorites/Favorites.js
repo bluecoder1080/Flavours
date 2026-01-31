@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useFavorites } from '../../context/FavoritesContext';
-import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';
+import { useFavorites, useCart, useAuth } from '../../context';
 
 const Favorites = () => {
   const { favorites, loading, removeFavorite } = useFavorites();

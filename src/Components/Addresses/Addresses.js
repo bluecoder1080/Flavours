@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useAddresses } from '../../context/AddressContext';
-import { useAuth } from '../../context/AuthContext';
+import { useAddresses } from '../../context';
+import { useAuth } from '../../context';
 
 const Addresses = () => {
   const { addresses, loading, addAddress, updateAddress, deleteAddress, setAsDefault } = useAddresses();

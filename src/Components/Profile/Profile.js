@@ -1,8 +1,5 @@
 import React from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useOrders } from '../../context/OrderContext';
-import { useFavorites } from '../../context/FavoritesContext';
-import { useAddresses } from '../../context/AddressContext';
+import { useAuth, useOrders, useFavorites, useAddresses } from '../../context';
 import { useNavigate } from 'react-router';
 
 const Profile = () => {

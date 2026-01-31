@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../context';
 
 const groceryCategories = [
   { id: 'all', name: 'All', icon: '🛒' },

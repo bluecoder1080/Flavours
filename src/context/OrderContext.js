@@ -83,7 +83,7 @@ export const OrderProvider = ({ children }) => {
         setOrders(prev => [newOrder, ...prev]);
         return newOrder;
       }
-      throw new Error(data.error);
+      throw new Error(data.details || data.error);
     } catch (error) {
       console.error('Failed to create order:', error);
       throw error;

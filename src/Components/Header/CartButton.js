@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Cart from '../Cart/Cart';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../context';
 
 const CartButton = () => {
   const { itemCount } = useCart();

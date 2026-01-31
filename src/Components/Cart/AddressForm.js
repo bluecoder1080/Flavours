@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useAddresses } from '../../context/AddressContext';
-import { useAuth } from '../../context/AuthContext';
+import { useAddresses, useAuth } from '../../context';
 
 const AddressForm = ({ address, setAddress, onNext }) => {
   const { addresses, saveAddressFromOrder } = useAddresses();
@@ -113,15 +112,23 @@ const AddressForm = ({ address, setAddress, onNext }) => {
 
           <div className="flex gap-2">
             {['Home', 'Work', 'Other'].map((type) => (
-              <button key={type} className="flex-1 py-2 px-3 rounded-lg border border-gray-700 text-gray-400 text-sm hover:border-orange-500 hover:text-orange-400 transition-all focus:border-orange-500 focus:text-orange-400">
+              <button 
+                key={type} 
+                onClick={() => setAddress(prev => ({ ...prev, type }))}
+                className={`flex-1 py-2 px-3 rounded-lg border text-sm transition-all
+                  ${address.type === type 
+                    ? 'border-orange-500 text-orange-400 bg-orange-500/10' 
+                    : 'border-gray-700 text-gray-400 hover:border-orange-500 hover:text-orange-400'}`}
+              >
                 {type}
               </button>
             ))}
           </div>
 
           <button 
+            disabled={!address.name || !address.phone || !address.flat || !address.area || !address.city}
             onClick={onNext}
-            className="w-full py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
+            className="w-full py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Proceed to Payment
           </button>

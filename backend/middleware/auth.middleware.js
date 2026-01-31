@@ -16,7 +16,7 @@ const protect = async (req, res, next) => {
     const decoded = verifyToken(token);
     
     // Get user from database
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await User.findById(decoded.uid).select('-password');
     
     if (!user) {
       return res.status(401).json({ 
@@ -43,7 +43,7 @@ const optionalProtect = async (req, res, next) => {
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.split(' ')[1];
       const decoded = verifyToken(token);
-      const user = await User.findById(decoded.id).select('-password');
+      const user = await User.findById(decoded.uid).select('-password');
       
       if (user) {
         req.user = user;
