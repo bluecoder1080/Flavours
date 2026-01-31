@@ -12,8 +12,9 @@ const Cart = ({ isOpen, onClose }) => {
         className="fixed inset-0 bg-black/60 z-40 animate-fade-in"
         onClick={onClose}
       />
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-[var(--color-surface)]
-                      z-50 shadow-2xl animate-slide-in-right overflow-y-auto">
+      <div className="fixed right-0 top-0 h-full w-96 bg-[var(--color-surface)]
+                      z-50 shadow-2xl animate-slide-in-right overflow-y-auto
+                      border-l border-gray-800">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gradient">Your Cart</h2>

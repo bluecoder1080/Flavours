@@ -9,7 +9,7 @@ const orderRoutes = require('./routes/order.routes');
 const authRoutes = require('./routes/auth.routes');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.SERVER_PORT || 5002;
 
 // Connect to Database
 connectDB();

@@ -7,14 +7,15 @@ const Logo = () => {
 
   return (
     <div 
-      className="cursor-pointer transition-all duration-300 hover:scale-105"
+      className="cursor-pointer transition-all duration-300 hover:scale-105 flex items-center gap-3"
       onClick={() => navigate('/')}
     >
       <img
         src={logo}
         alt="Flavours Logo"
-        className="w-32 h-auto animate-glow rounded-lg"
+        className="w-12 h-12 object-cover rounded-lg shadow-lg"
       />
+      <span className="text-xl font-bold text-gradient hidden sm:block">Flavours</span>
     </div>
   );
 };

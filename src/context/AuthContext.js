@@ -1,11 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from 'firebase/auth';
-import { auth } from '../config/firebase.config';
 
 const AuthContext = createContext();
 
@@ -22,37 +15,89 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('authToken'));
 
+  // Base URL for API
+  const API_URL = 'http://localhost:5002/api/auth';
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user) {
-        const idToken = await user.getIdToken();
-        localStorage.setItem('authToken', idToken);
-        setToken(idToken);
-      } else {
+    const loadUser = async () => {
+      const storedToken = localStorage.getItem('authToken');
+      
+      if (!storedToken) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/me`, {
+          headers: {
+            'Authorization': `Bearer ${storedToken}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setCurrentUser(data.user);
+          setToken(storedToken);
+        } else {
+          localStorage.removeItem('authToken');
+          setToken(null);
+          setCurrentUser(null);
+        }
+      } catch (error) {
+        console.error('Failed to load user', error);
         localStorage.removeItem('authToken');
         setToken(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
 
-    return unsubscribe;
+    loadUser();
   }, []);
 
   const signup = async (email, password, displayName) => {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    return userCredential;
+    const response = await fetch(`${API_URL}/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, displayName })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to sign up');
+    }
+
+    localStorage.setItem('authToken', data.token);
+    setToken(data.token);
+    setCurrentUser(data.user);
+    return data;
   };
 
   const signin = async (email, password) => {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return userCredential;
+    const response = await fetch(`${API_URL}/signin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to sign in');
+    }
+
+    localStorage.setItem('authToken', data.token);
+    setToken(data.token);
+    setCurrentUser(data.user);
+    return data;
   };
 
-  const logout = async () => {
-    await signOut(auth);
+  const logout = () => {
     localStorage.removeItem('authToken');
     setToken(null);
+    setCurrentUser(null);
   };
 
   return (

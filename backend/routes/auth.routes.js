@@ -85,4 +85,36 @@ router.post('/signin', async (req, res) => {
   }
 });
 
+// Get Current User
+router.get('/me', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+      return res.status(401).json({ success: false, error: 'No token provided' });
+    }
+
+    const { verifyToken } = require('../utils/jwt.utils');
+    const decoded = verifyToken(token);
+    
+    const user = await User.findById(decoded.uid).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        uid: user._id,
+        email: user.email,
+        displayName: user.displayName
+      }
+    });
+  } catch (error) {
+    res.status(401).json({ success: false, error: 'Invalid token' });
+  }
+});
+
 module.exports = router;
+
