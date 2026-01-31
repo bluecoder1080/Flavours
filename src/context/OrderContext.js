@@ -8,7 +8,7 @@ export const useOrders = () => useContext(OrderContext);
 const API_URL = 'http://localhost:5002/api';
 
 export const OrderProvider = ({ children }) => {
-  const { token, currentUser } = useAuth();
+  const { token, currentUser, logout } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -69,6 +69,11 @@ export const OrderProvider = ({ children }) => {
       });
 
       const data = await response.json();
+
+      if (response.status === 401 || data.error === 'User not found') {
+        logout();
+        throw new Error('Session expired. Please sign in again.');
+      }
 
       if (data.success) {
         const newOrder = {

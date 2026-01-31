@@ -57,7 +57,8 @@ const Cart = ({ isOpen, onClose }) => {
         setTimeout(clearCart, 500);
       } catch (error) {
         console.error("Order failed", error);
-        alert("Failed to place order. Please try again.");
+        console.error("Order failed", error);
+        alert(error.message || "Failed to place order. Please try again.");
       } finally {
         setIsProcessing(false);
       }
