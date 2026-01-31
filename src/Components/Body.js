@@ -1,90 +1,80 @@
-import RestaurantCard from "../RestaurantCard";
-import { useState, useEffect } from "react";
-import Shimmer from "./Shimmer";
-import { Link } from "react-router";
-import useOnlineStatus from "../../utils/useOnlineStatus";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router';
+import RestaurantCard from '../RestaurantCard';
+import Shimmer from './Shimmer';
+import SearchBar from './Body/SearchBar';
+import FilterBar from './Body/FilterBar';
+import useOnlineStatus from '../../utils/useOnlineStatus';
+import { restaurants } from '../data/restaurants';
 
 const Body = () => {
-  const [filterd, setfiltered] = useState([]);
+  const [filtered, setFiltered] = useState([]);
   const [allRestaurants, setAllRestaurants] = useState([]);
-  const [searchtext, setsearchtext] = useState("");
-
-
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    
-      const data = await fetch(
-        "https://www.swiggy.com/dapi/restaurants/list/v5?lat=25.3174112&lng=82.9738892&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING#"
-      );
-      const json = await data.json();
-      
-      const restaurants =
-        json?.data?.cards?.[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
-      
-      setfiltered(restaurants);
-      setAllRestaurants(restaurants); 
-    
-  };
-
+  const [searchText, setSearchText] = useState('');
+  const [isFiltered, setIsFiltered] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const onlineStatus = useOnlineStatus();
 
+  useEffect(() => {
+    // Simulate loading delay
+    setTimeout(() => {
+      setAllRestaurants(restaurants);
+      setFiltered(restaurants);
+      setIsLoading(false);
+    }, 500);
+  }, []);
+
+  const handleSearch = () => {
+    const searched = allRestaurants.filter((res) =>
+      res.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFiltered(searched);
+  };
+
+  const handleFilterTopRated = () => {
+    const topRated = allRestaurants.filter(
+      (res) => parseFloat(res.avgRating) > 4.2
+    );
+    setFiltered(topRated);
+    setIsFiltered(true);
+  };
+
+  const handleClearFilter = () => {
+    setFiltered(allRestaurants);
+    setIsFiltered(false);
+  };
+
   if (!onlineStatus) {
-    return <h1>Looks Like You Are Offline</h1>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <h1 className="text-2xl text-white">🔌 You're Offline</h1>
+      </div>
+    );
   }
 
-  if (!filterd || filterd.length === 0) {
-    return <Shimmer />;
-  }
+  if (isLoading) return <Shimmer />;
 
   return (
-    <div className="body">
-      <div className="flex">
-        <div className="m-4 p-4">
-          <input
-            type="text"
-            className="border border-solid border-black"
-            value={searchtext}
-            onChange={(e) => setsearchtext(e.target.value)}
-          />
-          <button 
-            className="px-4 py-2 bg-green-200 m-4 rounded-xl"
-            onClick={() => {
-              if (!allRestaurants) return;
-              const searchedRestaurants = allRestaurants.filter((res) =>
-                res?.info?.name?.toLowerCase().includes(searchtext.toLowerCase())
-              );
-              setfiltered(searchedRestaurants);
-            }}
-          >
-            Search
-          </button>
-        </div>
-        <div className="m-4 p-4 flex items-center rounded-xl">
-          <button
-            className="p-2 bg-gray-500 rounded-xl font-bold text-gray-100 hover:text-orange-400"
-            onClick={() => {
-              if (!allRestaurants) return;
-              const filterdList = allRestaurants.filter(
-                (resdata) => parseFloat(resdata?.info?.avgRatingString || 0) > 4.2
-              );
-              setfiltered(filterdList);
-            }}
-          >
-            Top Rated Restaurants
-          </button>
-        </div>
+    <div className="min-h-screen px-6 py-8 max-w-7xl mx-auto animate-fade-in">
+      <div className="flex justify-between items-center mb-8">
+        <SearchBar
+          searchText={searchText}
+          onSearchChange={setSearchText}
+          onSearch={handleSearch}
+        />
+        <FilterBar
+          onFilterTopRated={handleFilterTopRated}
+          onClearFilter={handleClearFilter}
+          isFiltered={isFiltered}
+        />
       </div>
-      
-      <div className="flex flex-wrap">
-        {filterd.map((restaurant) => (
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filtered.map((restaurant) => (
           <Link
-            to={"/RestaurantInfo/" + restaurant?.info?.id}
-            key={restaurant?.info?.id}
-            style={{ textDecoration: "none", color: "inherit" }}
+            to={`/RestaurantInfo/${restaurant.id}`}
+            key={restaurant.id}
+            className="block"
           >
             <RestaurantCard resdata={restaurant} />
           </Link>
