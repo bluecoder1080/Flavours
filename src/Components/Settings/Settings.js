@@ -57,10 +57,34 @@ const Settings = () => {
     setEditValue(currentValue || '');
   };
 
-  const handleSaveEdit = () => {
-    // TODO: Implement API call to update user profile
-    console.log(`Saving ${editModal}:`, editValue);
-    alert(`${editModal} updated to: ${editValue}\n\n(Note: Backend update not implemented yet)`);
+  const handleSaveEdit = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const updateData = editModal === 'Name' 
+        ? { displayName: editValue } 
+        : { phone: editValue };
+
+      const response = await fetch('http://localhost:5002/api/auth/update-profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Reload the page to refresh user data
+        window.location.reload();
+      } else {
+        alert('Failed to update: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Update error:', error);
+      alert('Failed to update. Please try again.');
+    }
     setEditModal(null);
     setEditValue('');
   };

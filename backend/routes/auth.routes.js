@@ -108,7 +108,8 @@ router.get('/me', async (req, res) => {
       user: {
         uid: user._id,
         email: user.email,
-        displayName: user.displayName
+        displayName: user.displayName,
+        phone: user.phone || ''
       }
     });
   } catch (error) {
@@ -116,5 +117,45 @@ router.get('/me', async (req, res) => {
   }
 });
 
-module.exports = router;
+// Update Profile
+router.put('/update-profile', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+      return res.status(401).json({ success: false, error: 'No token provided' });
+    }
 
+    const { verifyToken } = require('../utils/jwt.utils');
+    const decoded = verifyToken(token);
+    
+    const { displayName, phone } = req.body;
+    
+    const user = await User.findById(decoded.uid);
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    // Update fields if provided
+    if (displayName !== undefined) user.displayName = displayName;
+    if (phone !== undefined) user.phone = phone;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      user: {
+        uid: user._id,
+        email: user.email,
+        displayName: user.displayName,
+        phone: user.phone || ''
+      }
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+module.exports = router;
