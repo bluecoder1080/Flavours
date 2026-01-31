@@ -103,6 +103,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       currentUser,
+      user: currentUser, // Alias for compatibility
       token,
       signup,
       signin,
