@@ -13,10 +13,16 @@ import RestaurantInfo from "./RestaurantInfo";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { OrderProvider } from "./context/OrderContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
+import { AddressProvider } from "./context/AddressContext";
 import SignIn from "./Components/Auth/SignIn";
 import SignUp from "./Components/Auth/SignUp";
 import Profile from "./Components/Profile/Profile";
 import Orders from "./Components/Orders/Orders";
+import Favorites from "./Components/Favorites/Favorites";
+import Addresses from "./Components/Addresses/Addresses";
+import Settings from "./Components/Settings/Settings";
+import Help from "./Components/Help/Help";
 
 const Groceries = lazy(() => import("./Components/Groceries"));
 const ContactUs = lazy(() => import("./Components/Contact"));
@@ -24,14 +30,18 @@ const ContactUs = lazy(() => import("./Components/Contact"));
 const AppLayout = () => {
   return (
     <AuthProvider>
-      <OrderProvider>
-        <CartProvider>
-          <div className="app min-h-screen">
-            <Header />
-            <Outlet />
-          </div>
-        </CartProvider>
-      </OrderProvider>
+      <AddressProvider>
+        <FavoritesProvider>
+          <OrderProvider>
+            <CartProvider>
+              <div className="app min-h-screen">
+                <Header />
+                <Outlet />
+              </div>
+            </CartProvider>
+          </OrderProvider>
+        </FavoritesProvider>
+      </AddressProvider>
     </AuthProvider>
   );
 };
@@ -46,6 +56,10 @@ const appRouter = Router([
       { path: "/signup", element: <SignUp /> },
       { path: "/profile", element: <Profile /> },
       { path: "/orders", element: <Orders /> },
+      { path: "/favorites", element: <Favorites /> },
+      { path: "/addresses", element: <Addresses /> },
+      { path: "/settings", element: <Settings /> },
+      { path: "/help", element: <Help /> },
       { path: "/RestaurantInfo/:resid", element: <RestaurantInfo /> },
       {
         path: "/Groceries",
@@ -64,12 +78,8 @@ const appRouter = Router([
           </Suspense>
         ),
       },
-      { path: "/favorites", element: <div className="min-h-screen flex items-center justify-center text-white text-xl">❤️ Favorites Coming Soon</div> },
-      { path: "/addresses", element: <div className="min-h-screen flex items-center justify-center text-white text-xl">📍 Addresses Coming Soon</div> },
-      { path: "/payments", element: <div className="min-h-screen flex items-center justify-center text-white text-xl">💳 Payment Methods Coming Soon</div> },
-      { path: "/offers", element: <div className="min-h-screen flex items-center justify-center text-white text-xl">🎁 Offers Coming Soon</div> },
-      { path: "/settings", element: <div className="min-h-screen flex items-center justify-center text-white text-xl">⚙️ Settings Coming Soon</div> },
-      { path: "/help", element: <div className="min-h-screen flex items-center justify-center text-white text-xl">❓ Help & Support Coming Soon</div> },
+      { path: "/payments", element: <div className="min-h-screen flex items-center justify-center text-white text-xl">💳 Payment Methods - Coming Soon</div> },
+      { path: "/offers", element: <div className="min-h-screen flex items-center justify-center text-white text-xl">🎁 Offers & Coupons - Coming Soon</div> },
     ],
     errorElement: <Error />,
   },
