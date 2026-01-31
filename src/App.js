@@ -11,18 +11,23 @@ import AboutUs from "./Components/About";
 import Error from "./Components/Error";
 import RestaurantInfo from "./RestaurantInfo";
 import { CartProvider } from "./context/CartContext";
+import { AuthProvider } from "./context/AuthContext";
+import SignIn from "./Components/Auth/SignIn";
+import SignUp from "./Components/Auth/SignUp";
 
 const Groceries = lazy(() => import("./Components/Groceries"));
 const ContactUs = lazy(() => import("./Components/Contact"));
 
 const AppLayout = () => {
   return (
-    <CartProvider>
-      <div className="app min-h-screen">
-        <Header />
-        <Outlet />
-      </div>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <div className="app min-h-screen">
+          <Header />
+          <Outlet />
+        </div>
+      </CartProvider>
+    </AuthProvider>
   );
 };
 
@@ -34,6 +39,14 @@ const appRouter = Router([
       {
         path: "/",
         element: <Body />,
+      },
+      {
+        path: "/signin",
+        element: <SignIn />,
+      },
+      {
+        path: "/signup",
+        element: <SignUp />,
       },
       {
         path: "/RestaurantInfo/:resid",

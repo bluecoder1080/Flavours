@@ -1,4 +1,47 @@
-/node_modules
-/dist
-/.parcel-cache
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment Variables - CRITICAL: Never commit these!
 .env
+.env.local
+.env.development
+.env.test
+.env.production
+.env*.local
+
+# Firebase
+firebase-debug.log
+.firebase/
+*.log
+firebaseServiceAccount.json
+
+# Parcel
+.parcel-cache/
+dist/
+.cache/
+
+# Security - Never commit private keys!
+*.pem
+*.key
+*.p12
+*.pfx
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build outputs
+build/
+out/
+
+# Testing
+coverage/
+.nyc_output/
