@@ -28,6 +28,15 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/addresses', addressRoutes);
 
+// Health check at root
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'Flavours API is running!',
+    endpoints: ['/api/auth', '/api/cart', '/api/orders', '/api/favorites', '/api/addresses']
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });

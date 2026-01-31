@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import API_URL from '../config';
 
 const AddressContext = createContext();
 
@@ -10,8 +11,6 @@ export const useAddresses = () => {
   }
   return context;
 };
-
-const API_URL = 'http://localhost:5002/api';
 
 export const AddressProvider = ({ children }) => {
   const { token, currentUser } = useAuth();

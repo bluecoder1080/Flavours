@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../context';
+import API_URL from '../../config';
 
 const Settings = () => {
   const { currentUser, logout } = useAuth();
@@ -64,7 +65,7 @@ const Settings = () => {
         ? { displayName: editValue } 
         : { phone: editValue };
 
-      const response = await fetch('http://localhost:5002/api/auth/update-profile', {
+      const response = await fetch(`${API_URL}/auth/update-profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

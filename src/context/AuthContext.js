@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import API_BASE_URL from '../config';
 
 const AuthContext = createContext();
 
@@ -16,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('authToken'));
 
   // Base URL for API
-  const API_URL = 'http://localhost:5002/api/auth';
+  const API_URL = `${API_BASE_URL}/auth`;
 
   useEffect(() => {
     const loadUser = async () => {

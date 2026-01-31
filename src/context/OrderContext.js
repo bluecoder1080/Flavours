@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import API_URL from '../config';
 
 const OrderContext = createContext();
 
 export const useOrders = () => useContext(OrderContext);
-
-const API_URL = 'http://localhost:5002/api';
 
 export const OrderProvider = ({ children }) => {
   const { token, currentUser, logout } = useAuth();
