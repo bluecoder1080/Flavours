@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth, useOrders, useFavorites, useAddresses } from '../../context';
 import { useNavigate } from 'react-router';
 
@@ -8,6 +8,29 @@ const Profile = () => {
   const { favorites } = useFavorites();
   const { addresses } = useAddresses();
   const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Extract name from email if displayName is not set
+  const getUserName = () => {
+    if (currentUser?.displayName) return currentUser.displayName;
+    if (currentUser?.name) return currentUser.name;
+    if (currentUser?.email) {
+      // Extract username from email (before @) and capitalize first letter
+      const emailName = currentUser.email.split('@')[0];
+      return emailName.charAt(0).toUpperCase() + emailName.slice(1);
+    }
+    return 'Guest User';
+  };
+
+  // Get greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
+  const displayName = getUserName();
 
   const stats = [
     { label: 'Orders', value: orders.length, icon: '📦' },
@@ -32,14 +55,17 @@ const Profile = () => {
         <div className="glass rounded-2xl p-6 mb-6">
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-3xl font-bold text-white shadow-lg">
-              {currentUser?.name?.charAt(0)?.toUpperCase() || 'U'}
+              {displayName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-white">{currentUser?.name || 'Guest User'}</h1>
+              <p className="text-gray-400 text-sm">{getGreeting()},</p>
+              <h1 className="text-2xl font-bold text-white">{displayName}</h1>
               <p className="text-gray-400">{currentUser?.email || 'guest@example.com'}</p>
-              <p className="text-gray-500 text-sm mt-1">📱 +91 98765 43210</p>
             </div>
-            <button className="px-4 py-2 rounded-lg border border-orange-500 text-orange-400 hover:bg-orange-500/10 transition">
+            <button 
+              onClick={() => navigate('/settings')}
+              className="px-4 py-2 rounded-lg border border-orange-500 text-orange-400 hover:bg-orange-500/10 transition"
+            >
               Edit
             </button>
           </div>

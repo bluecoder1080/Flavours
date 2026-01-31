@@ -11,6 +11,21 @@ const Settings = () => {
     newsletter: false
   });
   const [darkMode, setDarkMode] = useState(true);
+  const [editModal, setEditModal] = useState(null); // 'name' or 'phone'
+  const [editValue, setEditValue] = useState('');
+
+  // Extract name from email if displayName is not set
+  const getUserName = () => {
+    if (currentUser?.displayName) return currentUser.displayName;
+    if (currentUser?.name) return currentUser.name;
+    if (currentUser?.email) {
+      const emailName = currentUser.email.split('@')[0];
+      return emailName.charAt(0).toUpperCase() + emailName.slice(1);
+    }
+    return 'Not set';
+  };
+
+  const displayName = getUserName();
 
   if (!currentUser) {
     return (
@@ -37,9 +52,55 @@ const Settings = () => {
     navigate('/');
   };
 
+  const openEditModal = (field, currentValue) => {
+    setEditModal(field);
+    setEditValue(currentValue || '');
+  };
+
+  const handleSaveEdit = () => {
+    // TODO: Implement API call to update user profile
+    console.log(`Saving ${editModal}:`, editValue);
+    alert(`${editModal} updated to: ${editValue}\n\n(Note: Backend update not implemented yet)`);
+    setEditModal(null);
+    setEditValue('');
+  };
+
   return (
     <div className="min-h-screen bg-[var(--color-bg)] py-8">
       <div className="max-w-2xl mx-auto px-4">
+        {/* Edit Modal */}
+        {editModal && (
+          <>
+            <div className="fixed inset-0 bg-black/70 z-40" onClick={() => setEditModal(null)} />
+            <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+              <div className="bg-gray-900 rounded-2xl p-6 w-full max-w-md border border-gray-800">
+                <h3 className="text-xl font-bold text-white mb-4">Edit {editModal}</h3>
+                <input
+                  type={editModal === 'phone' ? 'tel' : 'text'}
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  placeholder={`Enter your ${editModal}`}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-orange-500 focus:outline-none mb-4"
+                />
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => setEditModal(null)}
+                    className="flex-1 py-3 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 transition"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={handleSaveEdit}
+                    className="flex-1 py-3 rounded-lg bg-orange-500 text-white font-semibold hover:bg-orange-600 transition"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full bg-gray-800/80 flex items-center justify-center hover:bg-gray-700 transition-colors">
@@ -60,9 +121,14 @@ const Settings = () => {
               <div className="flex items-center justify-between py-3 border-b border-gray-800">
                 <div>
                   <p className="text-white font-medium">Name</p>
-                  <p className="text-gray-400 text-sm">{currentUser?.name || 'Not set'}</p>
+                  <p className="text-gray-400 text-sm">{displayName}</p>
                 </div>
-                <button className="text-orange-400 text-sm hover:underline">Edit</button>
+                <button 
+                  onClick={() => openEditModal('Name', displayName !== 'Not set' ? displayName : '')}
+                  className="text-orange-400 text-sm hover:underline"
+                >
+                  Edit
+                </button>
               </div>
               <div className="flex items-center justify-between py-3 border-b border-gray-800">
                 <div>
@@ -74,9 +140,14 @@ const Settings = () => {
               <div className="flex items-center justify-between py-3">
                 <div>
                   <p className="text-white font-medium">Phone</p>
-                  <p className="text-gray-400 text-sm">+91 98765 43210</p>
+                  <p className="text-gray-400 text-sm">{currentUser?.phone || 'Not set'}</p>
                 </div>
-                <button className="text-orange-400 text-sm hover:underline">Edit</button>
+                <button 
+                  onClick={() => openEditModal('Phone', currentUser?.phone || '')}
+                  className="text-orange-400 text-sm hover:underline"
+                >
+                  Edit
+                </button>
               </div>
             </div>
           </div>

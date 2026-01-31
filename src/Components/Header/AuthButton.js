@@ -7,6 +7,19 @@ const AuthButton = () => {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
 
+  // Extract name from email if displayName is not set
+  const getUserName = () => {
+    if (currentUser?.displayName) return currentUser.displayName;
+    if (currentUser?.name) return currentUser.name;
+    if (currentUser?.email) {
+      const emailName = currentUser.email.split('@')[0];
+      return emailName.charAt(0).toUpperCase() + emailName.slice(1);
+    }
+    return 'User';
+  };
+
+  const displayName = currentUser ? getUserName() : 'User';
+
   if (currentUser) {
     return (
       <div className="relative">
@@ -15,9 +28,9 @@ const AuthButton = () => {
           className="flex items-center gap-2 px-3 py-2 rounded-xl glass transition-all hover:scale-105"
         >
           <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center font-bold text-sm text-white">
-            {currentUser.name?.[0]?.toUpperCase() || currentUser.email?.[0]?.toUpperCase() || 'U'}
+            {displayName.charAt(0).toUpperCase()}
           </div>
-          <span className="text-white text-sm hidden sm:block">{currentUser.name || 'User'}</span>
+          <span className="text-white text-sm hidden sm:block">{displayName}</span>
           <svg className={`w-4 h-4 text-gray-400 transition-transform ${showMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
@@ -29,7 +42,7 @@ const AuthButton = () => {
             <div className="absolute right-0 mt-2 w-56 bg-gray-900 rounded-xl shadow-2xl border border-gray-800 z-50 overflow-hidden">
               {/* User Info */}
               <div className="p-4 border-b border-gray-800">
-                <p className="text-white font-medium">{currentUser.name || 'User'}</p>
+                <p className="text-white font-medium">{displayName}</p>
                 <p className="text-gray-500 text-sm">{currentUser.email}</p>
               </div>
               
