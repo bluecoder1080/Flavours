@@ -10,12 +10,12 @@ const orderItemSchema = mongoose.Schema({
 });
 
 const addressSchema = mongoose.Schema({
-  name: { type: String, required: true },
-  phone: { type: String, required: true },
-  flat: { type: String, required: true },
-  area: { type: String, required: true },
+  name: { type: String },
+  phone: { type: String },
+  flat: { type: String },
+  area: { type: String },
   landmark: { type: String },
-  city: { type: String, required: true },
+  city: { type: String },
   type: { type: String, enum: ['Home', 'Work', 'Other'], default: 'Home' }
 });
 
@@ -27,7 +27,6 @@ const orderSchema = mongoose.Schema({
   },
   orderId: {
     type: String,
-    required: true,
     unique: true
   },
   items: [orderItemSchema],
