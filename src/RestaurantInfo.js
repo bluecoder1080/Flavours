@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams, Link } from 'react-router';
 import { menuData } from './data/menuData';
 import { restaurants } from './data/restaurants';
-import { useCart } from './context/CartContext';
+import { useCart, useFavorites } from './context';
 
 const RestaurantInfo = () => {
   const { resid } = useParams();
