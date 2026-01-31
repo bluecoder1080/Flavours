@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const admin = require('../config/firebase.config');
+const User = require('../models/user.model');
 const { generateToken } = require('../utils/jwt.utils');
 
 // Sign Up
@@ -15,25 +15,39 @@ router.post('/signup', async (req, res) => {
       });
     }
 
-    const userRecord = await admin.auth().createUser({
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+      return res.status(400).json({
+        success: false,
+        error: 'User already exists'
+      });
+    }
+
+    const user = await User.create({
+      displayName: displayName || email.split('@')[0],
       email,
-      password,
-      displayName: displayName || email.split('@')[0]
+      password
     });
 
-    const token = generateToken(userRecord);
-
-    res.json({ 
-      success: true, 
-      user: {
-        uid: userRecord.uid,
-        email: userRecord.email,
-        displayName: userRecord.displayName
-      },
-      token 
-    });
+    if (user) {
+      res.status(201).json({
+        success: true,
+        user: {
+          uid: user._id,
+          email: user.email,
+          displayName: user.displayName
+        },
+        token: generateToken({ uid: user._id, email: user.email, name: user.displayName })
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid user data'
+      });
+    }
   } catch (error) {
-    res.status(400).json({ 
+    res.status(500).json({ 
       success: false, 
       error: error.message 
     });
@@ -43,33 +57,30 @@ router.post('/signup', async (req, res) => {
 // Sign In
 router.post('/signin', async (req, res) => {
   try {
-    const { email, idToken } = req.body;
+    const { email, password } = req.body;
 
-    if (!idToken) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'ID token is required' 
+    const user = await User.findOne({ email });
+
+    if (user && (await user.matchPassword(password))) {
+      res.json({
+        success: true,
+        user: {
+          uid: user._id,
+          email: user.email,
+          displayName: user.displayName
+        },
+        token: generateToken({ uid: user._id, email: user.email, name: user.displayName })
+      });
+    } else {
+      res.status(401).json({
+        success: false,
+        error: 'Invalid email or password'
       });
     }
-
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    const user = await admin.auth().getUser(decodedToken.uid);
-
-    const token = generateToken(user);
-
-    res.json({ 
-      success: true, 
-      user: {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName
-      },
-      token 
-    });
   } catch (error) {
-    res.status(401).json({ 
+    res.status(500).json({ 
       success: false, 
-      error: 'Invalid credentials' 
+      error: error.message 
     });
   }
 });
